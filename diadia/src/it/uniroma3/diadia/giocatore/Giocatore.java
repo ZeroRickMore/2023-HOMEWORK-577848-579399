@@ -41,4 +41,8 @@ public class Giocatore {
 		this.CFU = cfu;		
 	}	
 	
+	public String toString() {
+		return "Il numero di CFU è " + this.CFU + "\n" + this.borsa;
+	}
+	
 }
