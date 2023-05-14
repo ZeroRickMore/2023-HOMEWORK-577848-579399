@@ -1,7 +1,7 @@
 package it.uniroma3.diadia;
 import it.uniroma3.diadia.comandi.*;
-
-
+import it.uniroma3.diadia.ambienti.Labirinto;
+import it.uniroma3.diadia.ambienti.*;
 /**
  * Classe principale di diadia, un semplice gioco di ruolo ambientato al dia.
  * Per giocare crea un'istanza di questa classe e invoca il letodo gioca
@@ -29,14 +29,27 @@ public class DiaDia {
 	private Partita partita;
 	private IO ioconsole;
 
-	public DiaDia(IO io) { //crea nuova partita
+	public DiaDia(IO io) {
 		this.partita = new Partita();
 		this.ioconsole = io;
+	}
+
+	public DiaDia(Labirinto labirinto, IO io) {
+		this(io);
+		this.partita = new Partita(labirinto);	
 	}
 
 	public IO getIoconsole() {
 		return ioconsole;
 	}
+
+	public Partita getPartita() {
+		return partita;
+	}
+
+	/**
+	 * A ripetizione chiede istruzioni finché la partita non finisce.
+	 */
 
 	public void gioca() { 
 		String istruzione;
@@ -51,9 +64,11 @@ public class DiaDia {
 	/**
 	 * Processa una istruzione 
 	 *
-	 * @return true se l'istruzione e' eseguita e il gioco continua, false altrimenti
+	 * @return True se l'istruzione è eseguita e il gioco continua, false altrimenti.
+	 * 
 	 */
-	private boolean processaIstruzione(String istruzione) {
+
+	public boolean processaIstruzione(String istruzione) {
 		Comando comandoDaEseguire;
 		FabbricaDiComandi factory = new FabbricaDiComandiFisarmonica();
 		comandoDaEseguire = factory.costruisciComando(istruzione);
@@ -65,10 +80,28 @@ public class DiaDia {
 		return this.partita.isFinita();
 	}
 
-
 	public static void main(String[] argc) {
+		/* N.B. unica istanza di IOConsole
+		di cui sia ammessa la creazione */
 		IO io = new IOConsole();
-		DiaDia gioco = new DiaDia(io);
+		Labirinto labirinto = new LabirintoBuilder()
+				.addStanzaIniziale("LabCampusOne")
+				.addStanzaVincente("Biblioteca")
+				.addAdiacenza("LabCampusOne","Biblioteca","ovest")
+				.getLabirinto();
+		DiaDia gioco = new DiaDia(labirinto, io);
 		gioco.gioca();
 	}
+
+
+
+
+
+
+
+
+
+
+
+
 }

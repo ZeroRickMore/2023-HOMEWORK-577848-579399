@@ -6,18 +6,20 @@ import it.uniroma3.diadia.attrezzi.Attrezzo;
 public class ComandoPrendi implements Comando{
 
 	private String nomeAttrezzoDaPrendere;
+	static final private String msgNonPresente = "L'attrezzo inserito non è presente nella stanza!";
+	static final private String msgParametroMancante = "Devi specificare quale strumento vuoi prendere";
 
 	@Override
 	public void esegui(Partita partita, IO io) {
 		
 		if(nomeAttrezzoDaPrendere == null) {
-			io.mostraMessaggio("Devi specificare quale strumento vuoi prendere");
+			io.mostraMessaggio(msgParametroMancante);
 			return;
 		}
 
 		Attrezzo attrezzoDaPrendere = partita.getStanzaCorrente().getAttrezzo(nomeAttrezzoDaPrendere);
 		if(attrezzoDaPrendere == null) {
-			io.mostraMessaggio("L'attrezzo inserito non è presente nella stanza!");
+			io.mostraMessaggio(msgNonPresente);
 			return;
 		}
 		else {
@@ -28,7 +30,7 @@ public class ComandoPrendi implements Comando{
 				return;
 			}
 			else 
-				io.mostraMessaggio("L'attrezzo non è presente in questa stanza!");
+				io.mostraMessaggio(msgParametroMancante);
 			return;
 		}
 	}
@@ -46,5 +48,13 @@ public class ComandoPrendi implements Comando{
 	@Override
 	public String getParametro() {
 		return this.nomeAttrezzoDaPrendere;
+	}
+	
+	public String getMsgnonpresente() {
+		return msgNonPresente;
+	}
+
+	public String getMsgparametromancante() {
+		return msgParametroMancante;
 	}
 }

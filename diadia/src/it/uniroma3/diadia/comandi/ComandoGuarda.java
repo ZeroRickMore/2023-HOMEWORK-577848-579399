@@ -6,7 +6,10 @@ public class ComandoGuarda implements Comando{
 
 	@Override
 	public void esegui(Partita partita, IO io) {
-		io.mostraMessaggio("Ti trovi in: " + partita.getStanzaCorrente().getDescrizione() + "\n" + partita.getGiocatore());
+		if(partita.getStanzaCorrente().getDescrizione() != "Qui c'è buio pesto...") {
+			io.mostraMessaggio("Ti trovi in: " + partita.getStanzaCorrente().getDescrizione() + "\n" + partita.getGiocatore());
+		} else
+		io.mostraMessaggio(partita.getStanzaCorrente().getDescrizione() + "\n" + partita.getGiocatore());
 	}
 
 	@Override

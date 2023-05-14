@@ -7,30 +7,30 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class ComandoVaiTest {
-	private Partita partita;
-	private Stanza stanzaCorrente;
-	private Stanza stanzaSuccessiva;
+	
 	private ComandoVai comandoVai;
 	private FabbricaDiComandi fabbricaDiComandi;
 	private IO io;
+	private Labirinto labirinto;
+	private DiaDia diaDia;
 	
 	@BeforeEach
 	void setUp(){
-		this.stanzaCorrente = new Stanza("Blibloteca");
-		this.stanzaSuccessiva = new Stanza("RGB Room");
-		this.partita = new Partita();
 		this.io = new IOConsole();
-		this.partita.setStanzaCorrente(stanzaCorrente);
-		this.stanzaCorrente.impostaStanzaAdiacente("nord", this.stanzaSuccessiva);
 		this.fabbricaDiComandi = new FabbricaDiComandiFisarmonica();
-		this.comandoVai = (ComandoVai) fabbricaDiComandi.costruisciComando("vai nord");
-		
+		this.comandoVai = (ComandoVai) fabbricaDiComandi.costruisciComando("vai nord");	
+		this.labirinto = new LabirintoBuilder()
+				.addStanzaIniziale("Blibloteca")
+				.addStanza("RGB Room")
+				.addAdiacenza("Blibloteca", "RGB Room", "nord")
+				.getLabirinto();
+		this.diaDia = new DiaDia(this.labirinto, io);
 	}
 
 	@Test
 	void testEsegui() {
-		this.comandoVai.esegui(this.partita, this.io);
-		assertEquals(this.stanzaSuccessiva, this.partita.getStanzaCorrente());
+		this.comandoVai.esegui(this.diaDia.getPartita(), this.io);
+		assertEquals("RGB Room", this.diaDia.getPartita().getStanzaCorrente().getNome());
 	}
 
 	@Test

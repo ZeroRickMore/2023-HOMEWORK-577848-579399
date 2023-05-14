@@ -19,7 +19,7 @@ class StanzaBuiaTest {
 
 	@Test
 	void testGetDescrizioneNoAttrezzo() {
-		assertEquals("Qui c'è buio pesto", this.stanzaBuia.getDescrizione());
+		assertEquals("Qui c'è buio pesto...", this.stanzaBuia.getDescrizione());
 	}
 	
 	@Test

@@ -8,34 +8,35 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class ComandoPosaTest {
-	private Partita partita;
-	private Stanza stanza;
+	
 	private Attrezzo attrezzoDaPosare;
 	private ComandoPosa comandoPosa;
 	private FabbricaDiComandi fabbricaDiComandi;
 	private IO io;
-	//private Giocatore giocatore;
+	private Labirinto labirinto;
+	private DiaDia diaDia;
 
 	@BeforeEach
 	void setUp() {
-		this.stanza = new Stanza("Blibloteca");
-		//this.giocatore = new Giocatore();
-		this.partita = new Partita();
 		this.io = new IOConsole();
-		this.partita.setStanzaCorrente(stanza);
 		this.attrezzoDaPosare = new Attrezzo("attrezzo",8);
-		this.partita.getGiocatore().getBorsa().addAttrezzo(attrezzoDaPosare);
 		this.fabbricaDiComandi = new FabbricaDiComandiFisarmonica();
 		this.comandoPosa = (ComandoPosa) fabbricaDiComandi.costruisciComando("posa attrezzo");
+		
+		this.labirinto = new LabirintoBuilder()
+				.addStanzaIniziale("Blibloteca")
+				.getLabirinto();
+		this.diaDia = new DiaDia(this.labirinto, io);
+		this.diaDia.getPartita().getGiocatore().getBorsa().addAttrezzo(attrezzoDaPosare);
 	}
 
 	@Test
 	void testEsegui() {
 		assertEquals("attrezzo", this.comandoPosa.getParametro());
-		assertFalse(this.partita.getGiocatore().getBorsa().isEmpty());
-		this.comandoPosa.esegui(partita, io);
-		assertTrue(this.partita.getGiocatore().getBorsa().isEmpty());
-		assertEquals(this.attrezzoDaPosare, this.stanza.getAttrezzi()[0]);
+		assertFalse(this.diaDia.getPartita().getGiocatore().getBorsa().isEmpty());
+		this.comandoPosa.esegui(this.diaDia.getPartita(), io);
+		assertTrue(this.diaDia.getPartita().getGiocatore().getBorsa().isEmpty());
+		assertTrue(this.labirinto.getStanzaIniziale().hasAttrezzo("attrezzo"));
 	}
 
 	@Test

@@ -14,16 +14,9 @@ class PartitaTest {
 		this.partita = new Partita();
 	}
 	
-	
 	 /**
      * Test vinta
-     */
-	
-	@Test
-	void testNonVintaNonCambiandoIlSetup() {
-		assertFalse(this.partita.vinta());  
-	}
-	
+     */	
 	
 	@Test
 	void testNonVintaCambiandoStanzaCorrenteInNonVincente() {

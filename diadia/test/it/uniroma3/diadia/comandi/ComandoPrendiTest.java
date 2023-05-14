@@ -1,41 +1,42 @@
 package it.uniroma3.diadia.comandi;
 
+import it.uniroma3.diadia.ambienti.*;
 import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import it.uniroma3.diadia.*;
 import it.uniroma3.diadia.IOConsole;
-import it.uniroma3.diadia.Partita;
-import it.uniroma3.diadia.attrezzi.Attrezzo;
 
 class ComandoPrendiTest {
-	private Partita partita;
-	private Attrezzo attrezzoDaPrendere;
+	
 	private ComandoPrendi comandoPrendi;
 	private FabbricaDiComandi fabbricaDiComandi;
 	private IO io;
+	private Labirinto labirinto;
+	private DiaDia diaDia;
 	
 	@BeforeEach
 	void setUp() {
-		this.partita = new Partita();
 		this.io = new IOConsole();
-		this.attrezzoDaPrendere = new Attrezzo("Sasso", 2);
-		this.partita.getStanzaCorrente().addAttrezzo(attrezzoDaPrendere);
 		this.fabbricaDiComandi = new FabbricaDiComandiFisarmonica();
-		this.comandoPrendi = (ComandoPrendi)fabbricaDiComandi.costruisciComando("prendi Sasso");
+		this.comandoPrendi = (ComandoPrendi)fabbricaDiComandi.costruisciComando("prendi Kiodo");
+		this.labirinto = new LabirintoBuilder()
+				.addStanzaIniziale("A")
+				.addAttrezzo("Kiodo", 1)
+				.getLabirinto();
+		this.diaDia = new DiaDia(labirinto, io);
 	}
 
 	@Test
 	void testEsegui() {
-		assertTrue(this.partita.getStanzaCorrente().hasAttrezzo("Sasso"));
-		this.comandoPrendi.esegui(partita, io);
-		assertEquals(attrezzoDaPrendere, this.partita.getGiocatore().getBorsa().getAttrezzo("Sasso"));
-		assertFalse(this.partita.getStanzaCorrente().hasAttrezzo("Sasso"));
+		assertTrue(this.labirinto.getStanzaIniziale().hasAttrezzo("Kiodo"));
+		this.comandoPrendi.esegui(this.diaDia.getPartita(), io);
+		assertEquals("Kiodo", this.diaDia.getPartita().getGiocatore().getBorsa().getAttrezzo("Kiodo").getNome());
+		assertFalse(this.diaDia.getPartita().getStanzaCorrente().hasAttrezzo("Kiodo"));
 	}
 	
 	@Test
 	void testSetParametro() {
-		assertEquals("Sasso", this.comandoPrendi.getParametro());
+		assertEquals("Kiodo", this.comandoPrendi.getParametro());
 	}
 }

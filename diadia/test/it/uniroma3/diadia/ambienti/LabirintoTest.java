@@ -13,6 +13,7 @@ class LabirintoTest {
 	@BeforeEach
 	void setUp() {
 		this.labirinto = new Labirinto();
+		this.labirinto.creaStanzeDefault();
 		this.stanzaIniziale = new Stanza("Atrio");
 		this.stanzaVincente = new Stanza("Biblioteca");
 	}

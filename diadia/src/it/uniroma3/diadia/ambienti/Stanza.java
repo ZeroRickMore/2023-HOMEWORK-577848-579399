@@ -11,31 +11,26 @@
 
 package it.uniroma3.diadia.ambienti;
 import it.uniroma3.diadia.attrezzi.*;
+import it.uniroma3.diadia.giocatore.ComparatoreAttrezziPerNome;
+import java.util.*;
+
 
 public class Stanza {
 
-	static final private int NUMERO_MASSIMO_DIREZIONI = 4;
-	static final private int NUMERO_MASSIMO_ATTREZZI = 10;
-
 	private String nome;
-	private Attrezzo[] attrezzi;
-	private int numeroAttrezzi;
-	private Stanza[] stanzeAdiacenti;
-	private int numeroStanzeAdiacenti;
-	private String[] direzioni;
+	private Map<String, Attrezzo> attrezzi;
+	private Map<String,Stanza> stanzeAdiacenti;
 
 	/**
 	 * Crea una stanza. Non ci sono stanze adiacenti, non ci sono attrezzi.
 	 * @param nome il nome della stanza
 	 */
-	
+
 	public Stanza(String nome) {
 		this.nome = nome;
-		this.numeroStanzeAdiacenti = 0;
-		this.numeroAttrezzi = 0;
-		this.direzioni = new String[NUMERO_MASSIMO_DIREZIONI]; //gli dico che ho 4 direzioni
-		this.stanzeAdiacenti = new Stanza[NUMERO_MASSIMO_DIREZIONI]; //gli dico che ho 4 stanze
-		this.attrezzi = new Attrezzo[NUMERO_MASSIMO_ATTREZZI]; //gli dico che ho 10 attrezzi
+		this.stanzeAdiacenti = new HashMap<>();
+		this.attrezzi = new HashMap<>();
+
 	}
 
 
@@ -47,39 +42,29 @@ public class Stanza {
 	 */
 
 	public void impostaStanzaAdiacente(String direzione, Stanza stanza) {
-		boolean aggiornato = false; //non ho aggiornato la stanza adiacente
-		for(int i=0; i<this.direzioni.length; i++)
-			if (direzione.equals(this.direzioni[i])) { //quando la direzione della stanza è quella che gli ho dato (ci posso entrare solo dopo la prima dichiarazione)
-				this.stanzeAdiacenti[i] = stanza; //metti la stanza in input in quella direzione
-				aggiornato = true; //l'ho aggiornata 
-			}
-		if (!aggiornato) //prima dichiarazione della direzione
-			if (this.numeroStanzeAdiacenti < NUMERO_MASSIMO_DIREZIONI) {
-				this.direzioni[numeroStanzeAdiacenti] = direzione; //imposto la direzione per la prima volta
-				this.stanzeAdiacenti[numeroStanzeAdiacenti] = stanza; //e in quella direzione ci metto la stanza
-				this.numeroStanzeAdiacenti++; // quindi ho un'altra stanza adiacente 
-			}
+		if(direzione.equalsIgnoreCase("nord") || direzione.equalsIgnoreCase("sud") || direzione.equalsIgnoreCase("est") || direzione.equalsIgnoreCase("ovest"))
+		//Utilizziamo una brutta notazione perché il controllo sulle direzioni lo fa LabirintoBuilder
+			this.stanzeAdiacenti.put(direzione, stanza);
 	}
 
-	
+	public Map<String, Stanza> getStanzeAdiacenti() {
+		return stanzeAdiacenti;
+	}
+
 	/**
 	 * Restituisce la stanza adiacente nella direzione specificata
 	 * @param direzione
 	 */
-	
+
 	public Stanza getStanzaAdiacente(String direzione) {
-		Stanza stanza = null;
-		for(int i=0; i<this.numeroStanzeAdiacenti; i++)
-			if (this.direzioni[i].equals(direzione))
-				stanza = this.stanzeAdiacenti[i];
-		return stanza;
+		return this.stanzeAdiacenti.get(direzione);
 	}
-	
+
 	/**
 	 * Restituisce la nome della stanza.
 	 * @return il nome della stanza
 	 */
-	
+
 	public String getNome() {
 		return this.nome;
 	}
@@ -88,7 +73,7 @@ public class Stanza {
 	 * Restituisce la descrizione della stanza.
 	 * @return la descrizione della stanza
 	 */
-	
+
 	public String getDescrizione() {
 		return this.toString();
 	}
@@ -97,8 +82,8 @@ public class Stanza {
 	 * Restituisce la collezione di attrezzi presenti nella stanza.
 	 * @return la collezione di attrezzi nella stanza.
 	 */
-	
-	public Attrezzo[] getAttrezzi() {
+
+	public Map<String, Attrezzo> getAttrezzi() {
 		return this.attrezzi;
 	}
 
@@ -107,19 +92,18 @@ public class Stanza {
 	 * @param attrezzo l'attrezzo da mettere nella stanza.
 	 * @return true se riesce ad aggiungere l'attrezzo, false atrimenti. 
 	 */
-	
+
 	public boolean addAttrezzo(Attrezzo attrezzo) {
-		if (attrezzo == null) {
+		if(attrezzo==null)
 			return false;
-		}
-		if (this.numeroAttrezzi < NUMERO_MASSIMO_ATTREZZI) {
-			this.attrezzi[numeroAttrezzi] = attrezzo;
-			this.numeroAttrezzi++;
-			return true;
-		} 
-		else {
-			return false;
-		}
+		return this.attrezzi.putIfAbsent(attrezzo.getNome(), attrezzo)==null;
+	}
+
+
+	public SortedSet<Attrezzo> getContenutoOrdinatoPerNome() {
+		SortedSet<Attrezzo> setAttrezziOrdinatiPerNome = new TreeSet<Attrezzo>(new ComparatoreAttrezziPerNome());
+		setAttrezziOrdinatiPerNome.addAll(this.attrezzi.values());
+		return setAttrezziOrdinatiPerNome;
 	}
 
 	/**
@@ -127,19 +111,16 @@ public class Stanza {
 	 * stampadone la descrizione, le uscite e gli eventuali attrezzi contenuti
 	 * @return la rappresentazione stringa
 	 */
-	
+
 	public String toString() {
 		StringBuilder risultato = new StringBuilder();
-		risultato.append(this.nome);
-		risultato.append("\nUscite: ");
-		for (String direzione : this.direzioni)
-			if (direzione!=null)
+		risultato.append(this.getNome());
+		risultato.append("\nUscite:");
+		for (String direzione : this.stanzeAdiacenti.keySet())
+			if (direzione!=null && this.stanzeAdiacenti.get(direzione)!=null)
 				risultato.append(" " + direzione);
 		risultato.append("\nAttrezzi nella stanza: ");
-		for (Attrezzo attrezzo : this.attrezzi) {
-			if (attrezzo!=null)
-			risultato.append(attrezzo.toString()+" ");
-		}
+		risultato.append(this.getContenutoOrdinatoPerNome().toString());
 		return risultato.toString();
 	}
 
@@ -147,14 +128,11 @@ public class Stanza {
 	 * Controlla se un attrezzo esiste nella stanza (uguaglianza sul nome).
 	 * @return true se l'attrezzo esiste nella stanza, false altrimenti.
 	 */
-	
-	public boolean hasAttrezzo(String nomeAttrezzo) {	
-		for (Attrezzo i : this.attrezzi) {
-			if (i != null && i.getNome().equals(nomeAttrezzo))
-				return true;
-		}
-		return false;
-	} 
+
+	public boolean hasAttrezzo(String nomeAttrezzo) {
+		return this.attrezzi.containsKey(nomeAttrezzo);
+	}
+
 
 	/**
 	 * Restituisce l'attrezzo nomeAttrezzo se presente nella stanza.
@@ -162,16 +140,9 @@ public class Stanza {
 	 * @return l'attrezzo presente nella stanza.
 	 * 		   null se l'attrezzo non e' presente.
 	 */
-	
+
 	public Attrezzo getAttrezzo(String nomeAttrezzo) {
-		Attrezzo attrezzoCercato = null;
-		for (Attrezzo i : this.attrezzi) {
-			if (i != null && i.getNome().equals(nomeAttrezzo)) {
-				attrezzoCercato = i;
-				break;
-			}
-		}
-		return attrezzoCercato; 
+		return this.attrezzi.get(nomeAttrezzo);
 	}
 
 	/**
@@ -179,36 +150,24 @@ public class Stanza {
 	 * @param nomeAttrezzo
 	 * @return true se l'attrezzo e' stato rimosso, false altrimenti
 	 */
-	
-	public boolean removeAttrezzoDaStanza(Attrezzo attrezzo) {
-		for(int i=0; i<numeroAttrezzi; i++) {
-			if(this.attrezzi[i].getNome().equals(attrezzo.getNome())) {
-				for(int j = i; j<numeroAttrezzi ; j++) {
-					if(j==numeroAttrezzi-1) { //se sto all'ultima posizione evito di andare out of bounds e metto a null
-						this.attrezzi[j] = null;
-						break;
-					}
-					this.attrezzi[j] = this.attrezzi[j+1];			
-				}		
-				numeroAttrezzi--;
-				return true;
-			}
-		}
-		return false;
+
+	public boolean removeAttrezzoDaStanza (Attrezzo attrezzo) {
+		return this.attrezzi.remove(attrezzo.getNome(), attrezzo);
 	}
 
 
-	public String[] getDirezioni() {
-		String[] direzioni = new String[this.numeroStanzeAdiacenti];
-		for(int i=0; i<this.numeroStanzeAdiacenti; i++)
-			direzioni[i] = this.direzioni[i];
-		return direzioni;
+	public Set<String> getDirezioni() {
+		return this.stanzeAdiacenti.keySet();
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		Stanza that = (Stanza) o;
-		return this.getNome().equals(that.getNome()); 
+		return this.getNome().equals(that.getNome());
 	}
 
+	@Override
+	public int hashCode() {
+		return this.getNome().hashCode();
+	}
 }

@@ -4,6 +4,7 @@ import it.uniroma3.diadia.ambienti.Stanza;
 
 public class ComandoVai implements Comando {
 
+	private static final String nonPuoiAndarci = "Non puoi andare qui, è bloccato!"; //Riguardo la stanza bloccata
 	private String direzione;
 	
 	@Override
@@ -15,12 +16,15 @@ public class ComandoVai implements Comando {
 			return;
 		}
 		prossimaStanza = stanzaCorrente.getStanzaAdiacente(this.direzione);
+		if(prossimaStanza!= null && stanzaCorrente.equals(prossimaStanza))
+			io.mostraMessaggio(nonPuoiAndarci);
 		if (prossimaStanza==null) {
 			io.mostraMessaggio("Direzione inesistente");
 			return;
 		}
 		partita.setStanzaCorrente (prossimaStanza);
-		io.mostraMessaggio(partita.getStanzaCorrente().getNome() ) ;
+		
+		io.mostraMessaggio(partita.getStanzaCorrente().getNome()) ;
 		partita.getGiocatore().setCfu(partita.getGiocatore().getCfu()-1);
 	}
 
@@ -37,5 +41,9 @@ public class ComandoVai implements Comando {
 	@Override
 	public String getParametro() {
 		return this.direzione;
+	}
+	
+	public String getNonpuoiandarci() {
+		return nonPuoiAndarci;
 	}
 }

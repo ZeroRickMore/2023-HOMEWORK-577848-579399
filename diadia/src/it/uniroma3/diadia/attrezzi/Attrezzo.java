@@ -11,6 +11,7 @@
 
 package it.uniroma3.diadia.attrezzi;
 
+//import it.uniroma3.diadia.ambienti.Stanza;
 
 public class Attrezzo {
 
@@ -50,6 +51,17 @@ public class Attrezzo {
 	 * Restituisce una rappresentazione stringa di questo attrezzo
 	 * @return la rappresentazione stringa
 	 */
+	
+	@Override
+	public boolean equals(Object o) {
+		Attrezzo that = (Attrezzo) o;
+		return this.getNome().equals(that.getNome()) && (this.getPeso() == that.getPeso());
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.getNome().hashCode() + this.getPeso();
+	}
 	
 	public String toString() {
 		return this.getNome()+" ("+this.getPeso()+"kg)";

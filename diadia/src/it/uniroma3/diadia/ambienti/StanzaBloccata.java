@@ -4,13 +4,22 @@ public class StanzaBloccata extends Stanza {
 
 	private String direzioneBloccata;
 	private String nomeAttrezzoEnabler;
-
+	
+	/**
+	 * 
+	 * @param nome
+	 * @param direzioneBloccata
+	 * @param nomeAttrezzoEnabler
+	 */
 	public StanzaBloccata(String nome, String direzioneBloccata, String nomeAttrezzoEnabler) {
 		super(nome);
 		this.direzioneBloccata = direzioneBloccata;
 		this.nomeAttrezzoEnabler = nomeAttrezzoEnabler;
 	}
-
+	
+	/*
+	 * 
+	 */
 	@Override
 	public Stanza getStanzaAdiacente(String direzione) {
 		
@@ -21,7 +30,9 @@ public class StanzaBloccata extends Stanza {
 		
 		return super.getStanzaAdiacente(direzione); //se non ho ridato la stanza, i casi restanti sono che posso andarci
 	}
-	
+	/*
+	 * 
+	 */
 	@Override
 	public String getDescrizione() {
 		return "Ti trovi in: " + super.getDescrizione() + "\nPer andare in direzione " + this.direzioneBloccata + 

@@ -7,75 +7,25 @@ import org.junit.jupiter.api.Test;
 import it.uniroma3.diadia.attrezzi.*;
 
 class StanzaTest {
-	private Stanza centro;
-	private Stanza nord;
-	private Stanza sud;
-	private Stanza est;
-	private Stanza ovest;
-	private Attrezzo attrezzo;
-	private Attrezzo attrezzo2;
-	private Attrezzo attrezzo3;
+	private Labirinto labirinto;
 
 	@BeforeEach
-	void setUp(){
-		this.centro = new Stanza("Stanza test");
-		this.nord = new Stanza("Stanza nord");
-		this.sud = new Stanza("Stanza sud");
-		this.est = new Stanza("Stanza est");
-		this.ovest = new Stanza("Stanza ovest");
-		this.attrezzo = new Attrezzo("Martello", 8);
-		this.attrezzo2 = new Attrezzo("Ascia", 1);
-		this.attrezzo3 = new Attrezzo("Mouse", 9);
-		//avendo testato il funzionamento del setter impostaStanzaAdiacente, lo usiamo nel setUp
-		this.centro.impostaStanzaAdiacente("nord", this.nord);
-		this.centro.impostaStanzaAdiacente("sud", this.sud);
-		this.centro.impostaStanzaAdiacente("est", this.est);
-		this.centro.impostaStanzaAdiacente("ovest", this.ovest);
-		//avendo testato il funzionamento di addAttrezzo, lo usiamo nel setUp
-		this.centro.addAttrezzo(this.attrezzo);
-		this.centro.addAttrezzo(this.attrezzo2);
-		this.centro.addAttrezzo(this.attrezzo3);	 
-	}
-
-
-	/**
-	 * Test impostaStanzaAdiacente
-	 */
-
-	@Test
-	void testImpostaStanzaAdiacenteNord () {
-		Stanza stanzaNordTest = new Stanza ("Stanza nord test");
-		this.centro.impostaStanzaAdiacente("nord", stanzaNordTest);
-		assertEquals(stanzaNordTest, this.centro.getStanzaAdiacente("nord"));
-	}
-
-	@Test
-	void testImpostaStanzaAdiacenteSud () {
-		Stanza stanzaSudTest = new Stanza ("Stanza sud test");
-		this.centro.impostaStanzaAdiacente("sud", stanzaSudTest);
-		assertEquals(stanzaSudTest, this.centro.getStanzaAdiacente("sud"));
-	}
-
-	@Test
-	void testImpostaStanzaAdiacenteEst () {
-		Stanza stanzaEstTest = new Stanza ("Stanza est test");
-		this.centro.impostaStanzaAdiacente("est", stanzaEstTest);
-		assertEquals(stanzaEstTest, this.centro.getStanzaAdiacente("est"));
-	}
-
-	@Test
-	void testImpostaStanzaAdiacenteOvest () {
-		Stanza stanzaOvestTest = new Stanza ("Stanza ovest test");
-		this.centro.impostaStanzaAdiacente("ovest", stanzaOvestTest);
-		assertEquals(stanzaOvestTest, this.centro.getStanzaAdiacente("ovest"));
-	}
-
-	@Test
-	// verifico che non crei nuove direzioni
-	void testImpostaStanzaAdiacenteDirezioneNonValida () {
-		Stanza stanzaNonValidaTest = new Stanza ("Stanza non valida test");
-		this.centro.impostaStanzaAdiacente("nordovest", stanzaNonValidaTest);
-		assertNull(this.centro.getStanzaAdiacente("nordovest"));
+	void setUp(){	
+		this.labirinto = new LabirintoBuilder()
+				.addStanza("Stanza test")
+				.addAttrezzo("Martello", 8)
+				.addAttrezzo("Ascia", 1)
+				.addAttrezzo("Mouse", 9)
+				.setComeStanzaIniziale("Stanza test")
+				.addStanza("Stanza nord")
+				.addStanza("Stanza sud")
+				.addStanza("Stanza est")
+				.addStanza("Stanza ovest")
+				.addAdiacenza("Stanza test", "Stanza nord", "nord")
+				.addAdiacenza("Stanza test", "Stanza sud", "sud")
+				.addAdiacenza("Stanza test", "Stanza est", "est")
+				.addAdiacenza("Stanza test", "Stanza ovest", "ovest")
+				.getLabirinto();
 	}
 
 	/**
@@ -84,27 +34,27 @@ class StanzaTest {
 
 	@Test
 	void testGetStanzaAdiacenteNord() { 
-		assertEquals(this.nord, this.centro.getStanzaAdiacente("nord"));
+		assertEquals("Stanza nord", this.labirinto.getStanzaIniziale().getStanzaAdiacente("nord").getNome());
 	} 
 
 	@Test
 	void testGetStanzaAdiacenteSud() { 
-		assertEquals(this.sud, this.centro.getStanzaAdiacente("sud"));
+		assertEquals("Stanza sud", this.labirinto.getStanzaIniziale().getStanzaAdiacente("sud").getNome());
 	}
 
 	@Test
 	void testGetStanzaAdiacenteEst() { 
-		assertEquals(this.est, this.centro.getStanzaAdiacente("est"));
+		assertEquals("Stanza est", this.labirinto.getStanzaIniziale().getStanzaAdiacente("est").getNome());
 	}
 
 	@Test
 	void testGetStanzaAdiacenteOvest() { 
-		assertEquals(this.ovest, this.centro.getStanzaAdiacente("ovest"));
+		assertEquals("Stanza ovest", this.labirinto.getStanzaIniziale().getStanzaAdiacente("ovest").getNome());
 	}
 
 	@Test
 	void testGetStanzaAdiacenteNonValida() {
-		assertNull(this.centro.getStanzaAdiacente("nordovest"));
+		assertNull(this.labirinto.getStanzaIniziale().getStanzaAdiacente("nordovest"));
 	}
 
 	/**
@@ -114,12 +64,14 @@ class StanzaTest {
 
 	@Test
 	void testHasAttrezzoTrue() {
-		assertTrue(this.centro.hasAttrezzo("Martello"));
+		assertTrue(this.labirinto.getStanzaIniziale().hasAttrezzo("Martello"));
+		assertTrue(this.labirinto.getStanzaIniziale().hasAttrezzo("Ascia"));
+		assertTrue(this.labirinto.getStanzaIniziale().hasAttrezzo("Mouse"));
 	}
 
 	@Test
 	void testHasAttrezzoFalse() {
-		assertFalse(this.centro.hasAttrezzo("Iphone 150xs-pro-max-air-13 pollici"));
+		assertFalse(this.labirinto.getStanzaIniziale().hasAttrezzo("Iphone 150xs-pro-max-air-13 pollici"));
 	}
 
 	/**
@@ -128,16 +80,16 @@ class StanzaTest {
 
 	@Test
 	void testGetAttrezzoEsistente() {
-		assertEquals(attrezzo, this.centro.getAttrezzo("Martello"));
-		assertEquals(attrezzo2, this.centro.getAttrezzo("Ascia"));
-		assertEquals(attrezzo3, this.centro.getAttrezzo("Mouse"));
+		assertEquals("Martello", this.labirinto.getStanzaIniziale().getAttrezzo("Martello").getNome());
+		assertEquals("Ascia", this.labirinto.getStanzaIniziale().getAttrezzo("Ascia").getNome());
+		assertEquals("Mouse", this.labirinto.getStanzaIniziale().getAttrezzo("Mouse").getNome());
 	}
 
 	@Test
-	void testGetAttrezzoNull() {
-		assertNull(this.centro.getAttrezzo("Spada"));
-		assertNull(this.centro.getAttrezzo("Resilienza"));
-		assertNull(this.centro.getAttrezzo("Predominio"));
+	void testGetAttrezzoNonEsistente() {
+		assertNull(this.labirinto.getStanzaIniziale().getAttrezzo("Spada"));
+		assertNull(this.labirinto.getStanzaIniziale().getAttrezzo("Resilienza"));
+		assertNull(this.labirinto.getStanzaIniziale().getAttrezzo("Dominio"));
 	}
 
 
@@ -147,14 +99,16 @@ class StanzaTest {
 
 	@Test
 	void testRemoveAttrezzoTrovato() {
-		assertTrue(this.centro.removeAttrezzoDaStanza(attrezzo2));
-		assertTrue(this.centro.removeAttrezzoDaStanza(attrezzo));
-		assertTrue(this.centro.removeAttrezzoDaStanza(attrezzo3));
+		assertFalse(this.labirinto.getStanzaIniziale().getAttrezzi().isEmpty());
+		assertTrue(this.labirinto.getStanzaIniziale().removeAttrezzoDaStanza(new Attrezzo("Martello", 8)));
+		assertTrue(this.labirinto.getStanzaIniziale().removeAttrezzoDaStanza(new Attrezzo("Ascia", 1)));
+		assertTrue(this.labirinto.getStanzaIniziale().removeAttrezzoDaStanza(new Attrezzo("Mouse", 9)));
+		assertTrue(this.labirinto.getStanzaIniziale().getAttrezzi().isEmpty());
 	}
 
 	@Test
 	void testRemoveAttrezzoNonTrovato() {
-		assertFalse(this.centro.removeAttrezzoDaStanza(new Attrezzo("pugnale del vicoletto", 4)));
+		assertFalse(this.labirinto.getStanzaIniziale().removeAttrezzoDaStanza(new Attrezzo("pugnale del vicoletto", 4)));
 	}
 
 	/**
@@ -163,36 +117,26 @@ class StanzaTest {
 
 	@Test
 	void testAddAttrezzoTrue() {
-		assertTrue(this.centro.addAttrezzo(new Attrezzo ("Galeforce", 6)));
+		assertTrue(this.labirinto.getStanzaIniziale().addAttrezzo(new Attrezzo ("Galeforce", 6)));
 	}
 
 	@Test
 	void testAddAttrezzoFalse() {
-		assertFalse(this.centro.addAttrezzo(null));
+		assertFalse(this.labirinto.getStanzaIniziale().addAttrezzo(new Attrezzo("Martello", 8)));
+		assertFalse(this.labirinto.getStanzaIniziale().addAttrezzo(new Attrezzo("Martello", 1)));
+		assertFalse(this.labirinto.getStanzaIniziale().addAttrezzo(null));
 	}
 
 	@Test
 	void testAddAttrezzoFalseStanzaPiena() {
-		this.centro.addAttrezzo(new Attrezzo ("Galeforce", 6));
-		this.centro.addAttrezzo(new Attrezzo ("Baron Nashor", 4));
-		this.centro.addAttrezzo(new Attrezzo ("Immortal Cringebow", 6));
-		this.centro.addAttrezzo(new Attrezzo ("Rabadon", 6));
-		this.centro.addAttrezzo(new Attrezzo ("Rylai", 6));
-		this.centro.addAttrezzo(new Attrezzo ("Collector", 6));
-		this.centro.addAttrezzo(new Attrezzo ("Infinity Edge", 6));
-		assertFalse(this.centro.addAttrezzo(new Attrezzo ("Piastrella", 4)));
-	}
-
-	/**
-	 * Test getDirezioni   
-	 */
-
-	@Test
-	void testGetDirezioni() {
-		assertEquals("nord", this.centro.getDirezioni()[0]); 
-		assertEquals("sud", this.centro.getDirezioni()[1]);
-		assertEquals("est", this.centro.getDirezioni()[2]);
-		assertEquals("ovest", this.centro.getDirezioni()[3]);
+		this.labirinto.getStanzaIniziale().addAttrezzo(new Attrezzo ("Galeforce", 6));
+		this.labirinto.getStanzaIniziale().addAttrezzo(new Attrezzo ("Baron Nashor", 4));
+		this.labirinto.getStanzaIniziale().addAttrezzo(new Attrezzo ("Immortal Cringebow", 6));
+		this.labirinto.getStanzaIniziale().addAttrezzo(new Attrezzo ("Rabadon", 6));
+		this.labirinto.getStanzaIniziale().addAttrezzo(new Attrezzo ("Rylai", 6));
+		this.labirinto.getStanzaIniziale().addAttrezzo(new Attrezzo ("Collector", 6));
+		this.labirinto.getStanzaIniziale().addAttrezzo(new Attrezzo ("Infinity Edge", 6));
+		assertTrue(this.labirinto.getStanzaIniziale().addAttrezzo(new Attrezzo ("Piastrella", 4)));
 	}
 
 }

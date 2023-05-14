@@ -18,18 +18,18 @@ class StanzaMagicaTest {
 	@Test
 	void testAddAttrezzoNonMagico() {
 		this.stanza.addAttrezzo(attrezzo);
-		assertEquals("palla", this.stanza.getAttrezzi()[0].getNome());
-		assertEquals(2, this.stanza.getAttrezzi()[0].getPeso());
+		assertTrue(this.stanza.hasAttrezzo("palla"));
+		assertFalse(this.stanza.hasAttrezzo("Falange"));
 	}
 	
 	
 	@Test
 	void testAddAttrezzoMagico() {
+		this.stanza.addAttrezzo(new Attrezzo("Topo", 5));
+		this.stanza.addAttrezzo(new Attrezzo("Lale", 1));
 		this.stanza.addAttrezzo(attrezzo);
-		this.stanza.addAttrezzo(attrezzo);
-		this.stanza.addAttrezzo(attrezzo);
-		assertEquals("allap", this.stanza.getAttrezzi()[2].getNome());
-		assertEquals(4, this.stanza.getAttrezzi()[2].getPeso());
+		assertTrue(this.stanza.hasAttrezzo("allap"));
+		assertFalse(this.stanza.hasAttrezzo("palla"));
 	}
 
 }

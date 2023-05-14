@@ -14,7 +14,18 @@ public class Labirinto {
 	private Stanza stanzaVincente;
 	
 	public Labirinto() {
-		creaStanze();
+		this.stanzaIniziale = null;
+		this.stanzaVincente = null;
+	}
+	
+	// GETTERS AND SETTERS
+	
+	public void setStanzaIniziale(Stanza stanzaIniziale) {
+		this.stanzaIniziale = stanzaIniziale;
+	}
+
+	public void setStanzaVincente(Stanza stanzaVincente) {
+		this.stanzaVincente = stanzaVincente;
 	}
 	
 	public Stanza getStanzaIniziale() {
@@ -25,11 +36,13 @@ public class Labirinto {
 		return stanzaVincente;
 	}
 	
+	// GETTERS AND SETTERS
+	
 	 /**
      * Crea tutte le stanze e le porte di collegamento
      */
 	
-	private void creaStanze() {
+	public void creaStanzeDefault() { 
 
 		/* crea gli attrezzi */
     	Attrezzo lanterna = new Attrezzo("lanterna", 3);
@@ -59,8 +72,8 @@ public class Labirinto {
         /* pone gli attrezzi nelle stanze */
 		aulaN10.addAttrezzo(lanterna);
 		atrio.addAttrezzo(osso);
-
-		// il gioco comincia nell'atrio
+		
+		 //il gioco comincia nell'atrio
           
 		stanzaIniziale = atrio;
 		stanzaVincente = biblioteca;
