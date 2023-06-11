@@ -1,0 +1,9 @@
+Stanze:Atrio, Biblioteca
+Stanze magiche:N12 , Mensa 2
+Stanze bloccate:N11 sud amicizia, LabCampus ovest 18aPOO
+Stanze buie:Bagno fusibile
+Inizio:Atrio
+Vincente:Biblioteca
+Attrezzi:osso 1 Atrio, fungo 2 N12, fusibile 1 N11, amicizia 4 Bagno, bonsai 2 Bagno, telecamera 3 Bagno, insalata 2 Bagno, swiffer 1 Bagno, castoro 9 Bagno, ak47 5 Bagno, lacrime 1 LabCampus
+Uscite:Atrio est N11, Atrio ovest N12, Atrio nord Mensa, N11 est Bagno, N11 sud LabCampus, LabCampus ovest Biblioteca
+Personaggi:mago Giosuele Anche il mare ci mente; lo vediamo celeste quando in realtà è trasparente... E tu cosa ne pensi avventuriero? %%% libertà 0 Bagno, cane Retlav ... %%% 18aPOO 9 LabCampus, strega Orokanajosei Watashi no saidai no kyōfu wa bon'netto ga aita kurumadesu... Cosa vuoi da me mortale?! %%% kapyushon 20 N11
